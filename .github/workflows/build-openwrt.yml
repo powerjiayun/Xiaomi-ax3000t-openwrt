@@ -10,8 +10,8 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/coolsnowwolf/lede  # 仓库 URL
-  REPO_BRANCH: master  # 分支名称
+  REPO_URL: https://github.com/padavanonly/immortalwrt-mt798x-6.6
+  REPO_BRANCH: openwrt-24.10-6.6
   FEEDS_CONF: feeds.conf.default  # 自定义 feeds 配置文件
   CONFIG_FILE: .config  # 配置文件
   DIY_P1_SH: diy-part1.sh  # 自定义脚本 1
