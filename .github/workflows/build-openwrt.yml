@@ -117,11 +117,11 @@ jobs:
         rm -rf package/ddns-go
         git clone https://github.com/sirpdboy/luci-app-ddns-go.git package/ddns-go
 
-    - name: Install argon
-      run: |
-        cd openwrt/package/lean
-        rm -rf luci-theme-argon
-        git clone -b master https://github.com/jerrykuku/luci-theme-argon.git luci-theme-argon
+   # - name: Install argon
+      #run: |
+        #cd openwrt/package/lean
+        #rm -rf luci-theme-argon
+        #git clone -b master https://github.com/jerrykuku/luci-theme-argon.git luci-theme-argon
 
     - name: Load custom configuration  # 加载自定义配置
       run: |
