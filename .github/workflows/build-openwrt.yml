@@ -1,6 +1,9 @@
 name: Build OpenWrt  # 工作流名称：构建 OpenWrt
 
 on:
+  schedule:
+    # 每周日 UTC 00:00 触发（= 北京时间 08:00）
+    - cron: "0 0 * * 0"
   repository_dispatch:  # 当收到 repository_dispatch 事件时触发
   workflow_dispatch:    # 允许手动触发工作流
     inputs:
