@@ -1,5 +1,8 @@
 name: Build OpenWrt  # 工作流名称：构建 OpenWrt
 
+permissions:
+  contents: write
+
 on:
   schedule:
     # 每周日 UTC 00:00 触发（= 北京时间 08:00）
@@ -196,6 +199,19 @@ jobs:
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
         [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
+
+       
+    - name: Publish Release
+      uses: softprops/action-gh-release@v2
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        name: ${{ steps.tag.outputs.release_tag }}
+        body_path: release.txt
+        files: |
+          ${{ env.FIRMWARE }}/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Delete workflow runs  # 删除工作流运行
       uses: GitRML/delete-workflow-runs@main
