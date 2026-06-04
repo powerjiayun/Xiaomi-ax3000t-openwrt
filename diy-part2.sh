@@ -21,3 +21,15 @@ CONFIG_TARGET_DEVICE_PACKAGES_mediatek_filogic_DEVICE_xiaomi_mi-router-ax3000t="
 EOF
 
 grep -E '=y$|=m$' .config.bak >> .config
+
+# ===== 临时修复：HeYangTek 驱动与 U-Boot 2024.10 API 不兼容 =====
+
+# 等上游 PR #389 合并后删除下面 3 行
+
+UBOOT_PATCH="package/boot/uboot-mediatek/patches/344-mtd-spinand-add-support-for-HeYangTek-HYF1GQ4UDACAE.patch"
+
+sed -i 's/nanddev_get_ecc_conf(nand)->strength >> 1/nand->eccreq.strength >> 1/' $UBOOT_PATCH
+
+sed -i 's/nanddev_get_ecc_conf(nand)->strength/nand->eccreq.strength/' $UBOOT_PATCH
+
+# ===== 临时修复到此结束 =====
