@@ -6,20 +6,7 @@ sed -i 's/192.168.1.1/192.168.8.1/g' package/base-files/files/bin/config_generat
 sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 
 # 核心防坑（安全版）：以 237 官方 defconfig 为基底，仅追加用户自定义的“启用/模块”选项，不带任何 is not set
+
 mv .config .config.bak
 cp -f defconfig/mt7981-ax3000.config .config
-
-sed -i 's/^CONFIG_TARGET_mediatek_mt7981=y/CONFIG_TARGET_mediatek_filogic=y/' .config
-
-# 删掉多设备模式和所有设备条目
-sed -i '/CONFIG_TARGET_MULTI_PROFILE/d' .config
-sed -i '/CONFIG_TARGET_PER_DEVICE_ROOTFS/d' .config
-sed -i '/CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_/d' .config
-
-# 只写回 AX3000T
-cat >> .config << 'EOF'
-CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_xiaomi_mi-router-ax3000t=y
-CONFIG_TARGET_DEVICE_PACKAGES_mediatek_filogic_DEVICE_xiaomi_mi-router-ax3000t=""
-EOF
-
 grep -E '=y$|=m$' .config.bak >> .config
