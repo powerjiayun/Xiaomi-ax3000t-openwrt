@@ -9,6 +9,8 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/M
 mv .config .config.bak
 cp -f defconfig/mt7981-ax3000.config .config
 
+sed -i 's/^CONFIG_TARGET_mediatek_mt7981=y/CONFIG_TARGET_mediatek_filogic=y/' .config
+
 # 删掉多设备模式和所有设备条目
 sed -i '/CONFIG_TARGET_MULTI_PROFILE/d' .config
 sed -i '/CONFIG_TARGET_PER_DEVICE_ROOTFS/d' .config
