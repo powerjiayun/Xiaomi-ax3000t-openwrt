@@ -10,3 +10,7 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/M
 mv .config .config.bak
 cp -f defconfig/mt7981-ax3000.config .config
 grep -E '=y$|=m$' .config.bak >> .config
+
+# 只编译 AX3000T：删除 defconfig 自带的其它设备型号，避免编译出一堆其他路由器的固件
+sed -i '/^CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_.*=y/d' .config
+echo "CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_xiaomi_mi-router-ax3000t=y" >> .config
