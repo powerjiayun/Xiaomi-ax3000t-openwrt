@@ -123,6 +123,17 @@ jobs:
         rm -rf package/ddns-go
         git clone https://github.com/sirpdboy/luci-app-ddns-go.git package/ddns-go
 
+
+    - name: Install luci-app-tailscale
+      run: |
+        cd openwrt
+        # 官方要求：移除 feeds 里 tailscale 默认启动脚本与配置，避免与 luci-app-tailscale 冲突
+        if [ -f feeds/packages/net/tailscale/Makefile ]; then
+          sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/packages/net/tailscale/Makefile
+        fi
+        rm -rf package/luci-app-tailscale
+        git clone --depth=1 https://github.com/asvow/luci-app-tailscale.git package/luci-app-tailscale
+
    # - name: Install argon
       #run: |
         #cd openwrt/package/lean
