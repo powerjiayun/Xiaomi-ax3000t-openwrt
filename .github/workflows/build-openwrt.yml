@@ -123,6 +123,15 @@ jobs:
         rm -rf package/ddns-go
         git clone https://github.com/sirpdboy/luci-app-ddns-go.git package/ddns-go
 
+    - name: Install daed (dae / daed / luci-app-daede)
+      run: |
+        cd openwrt
+        rm -rf package/openwrt-daede
+        git clone --depth=1 https://github.com/kenzok8/openwrt-daede.git package/openwrt-daede
+        # 仅保留三个 OpenWrt 包目录，避免根目录的非包文件干扰构建
+        find package/openwrt-daede -mindepth 1 -maxdepth 1 \
+          ! -name dae ! -name daed ! -name luci-app-daede -exec rm -rf {} +
+
    # - name: Install argon
       #run: |
         #cd openwrt/package/lean
