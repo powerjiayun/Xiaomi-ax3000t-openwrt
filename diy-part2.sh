@@ -20,3 +20,31 @@ echo "CONFIG_TARGET_DEVICE_mediatek_filogic_DEVICE_xiaomi_mi-router-ax3000t=y" >
 
 # 追加用户自定义的软件包选项（过滤掉目标平台相关行，避免与 defconfig 冲突）
 grep -E '=y$|=m$' .config.bak | grep -v 'CONFIG_TARGET_' >> .config
+
+# PassWall 1 精简配置：Hysteria 2 的上游 OpenWrt 软件包名称为 hysteria。
+# 明确关闭所有默认会选入的其他代理核心；仅保留 PassWall 的必要网络/DNS 依赖。
+cat >> .config <<'EOF'
+CONFIG_PACKAGE_luci-app-passwall=y
+CONFIG_PACKAGE_luci-i18n-passwall-zh-cn=y
+CONFIG_PACKAGE_luci-app-passwall_Nftables_Transparent_Proxy=y
+# CONFIG_PACKAGE_luci-app-passwall_Iptables_Transparent_Proxy is not set
+CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Hysteria=y
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Geoview is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Haproxy is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_NaiveProxy is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Libev_Client is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Libev_Server is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Client is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadowsocks_Rust_Server is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ShadowsocksR_Libev_Client is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ShadowsocksR_Libev_Server is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Shadow_TLS is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Simple_Obfs is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_SingBox is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Trojan_Plus is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_tuic_client is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Geodata is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_V2ray_Plugin is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray is not set
+# CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray_Plugin is not set
+EOF

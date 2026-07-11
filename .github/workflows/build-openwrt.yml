@@ -117,6 +117,17 @@ jobs:
     - name: Install feeds  # 安装 feeds
       run: cd openwrt && ./scripts/feeds install -a
 
+    - name: Install PassWall 1 with Hysteria 2 only
+      run: |
+        cd openwrt
+        # 使用 PassWall 官方维护的依赖版本，避免与 OpenWrt feeds 的同名核心冲突。
+        # hysteria 软件包提供 Hysteria 2 核心；其他代理核心虽在仓库中存在，但不会被 .config 选中。
+        rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,v2ray-plugin,xray-plugin,geoview,shadow-tls}
+        rm -rf feeds/luci/applications/luci-app-passwall
+        rm -rf package/passwall-packages package/passwall-luci
+        git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git package/passwall-packages
+        git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall.git package/passwall-luci
+
     - name: Install ddns-go
       run: |
         cd openwrt
