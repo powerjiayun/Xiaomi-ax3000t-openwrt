@@ -127,6 +127,10 @@ jobs:
         rm -rf package/passwall-packages package/passwall-luci
         git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git package/passwall-packages
         git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall.git package/passwall-luci
+        # 上游 Hysteria 2.7+ 需要 Go 1.24（2.10+ 需要 Go 1.25），而本源码的 Go 为 1.23。
+        # 固定到支持 Hysteria 2 协议且兼容 Go 1.23 的 2.6.1，避免上游更新导致构建中断。
+        sed -i 's/^PKG_VERSION:=.*/PKG_VERSION:=2.6.1/' package/passwall-packages/hysteria/Makefile
+        sed -i 's/^PKG_HASH:=.*/PKG_HASH:=21955752d4a9fcbe42cde9e491421b67144e0070cba184884ad7f8d4ff1f48de/' package/passwall-packages/hysteria/Makefile
 
     - name: Install ddns-go
       run: |
