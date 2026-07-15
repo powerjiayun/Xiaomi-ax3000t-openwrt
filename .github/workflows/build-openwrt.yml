@@ -117,8 +117,9 @@ jobs:
     - name: Upgrade Go toolchain for Hysteria 2.10
       run: |
         cd openwrt
-        # Hysteria 2.10.0 要求 Go >= 1.25；使用固定的 Go 1.25.7 feed 提交，避免跟随 master 漂移。
-        GO_FEED_COMMIT=5065a2ff8f2a1bcba6e445397f33ac16d76b3ad3
+        # Hysteria 2.10.0 要求 Go >= 1.25。这里固定使用仍提供 golang/host 的单包 Go 1.25.6，
+        # 避免新版多版本 feed 的 golang1.25/host 无法被当前 24.10 feeds 安装器注册。
+        GO_FEED_COMMIT=dbaeeb38d3df5f7b8c78ff23e558d2eab5b0a895
         rm -rf /tmp/immortalwrt-golang feeds/packages/lang/golang
         git init -q /tmp/immortalwrt-golang
         git -C /tmp/immortalwrt-golang remote add origin https://github.com/immortalwrt/packages.git
@@ -127,10 +128,17 @@ jobs:
         git -C /tmp/immortalwrt-golang fetch --depth=1 origin "$GO_FEED_COMMIT"
         git -C /tmp/immortalwrt-golang checkout --detach FETCH_HEAD
         cp -a /tmp/immortalwrt-golang/lang/golang feeds/packages/lang/golang
-        grep -q '^GO_DEFAULT_VERSION:=1.25$' feeds/packages/lang/golang/golang-values.mk
+        grep -q '^GO_VERSION_MAJOR_MINOR:=1.25$' feeds/packages/lang/golang/golang/Makefile
+        grep -q '^GO_VERSION_PATCH:=6$' feeds/packages/lang/golang/golang/Makefile
+        grep -q '^PKG_BUILD_DEPENDS:=golang/host$' feeds/packages/lang/golang/golang/Makefile
+        test ! -d feeds/packages/lang/golang/golang1.25
 
     - name: Install feeds  # 安装 feeds
-      run: cd openwrt && ./scripts/feeds install -a
+      run: |
+        cd openwrt
+        ./scripts/feeds install -a
+        grep -q '^GO_VERSION_MAJOR_MINOR:=1.25$' package/feeds/packages/golang/Makefile
+        grep -q '^PKG_BUILD_DEPENDS:=golang/host$' package/feeds/packages/golang/Makefile
 
     - name: Install PassWall 1 with Hysteria 2 only
       run: |
@@ -142,7 +150,7 @@ jobs:
         rm -rf package/passwall-packages package/passwall-luci
         git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git package/passwall-packages
         git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall.git package/passwall-luci
-        # 固定 Hysteria 2.10.0 及其官方源码校验值，配合上面的 Go 1.25.7 工具链构建。
+        # 固定 Hysteria 2.10.0 及其官方源码校验值，配合上面的 Go 1.25.6 工具链构建。
         sed -i 's/^PKG_VERSION:=.*/PKG_VERSION:=2.10.0/' package/passwall-packages/hysteria/Makefile
         sed -i 's/^PKG_HASH:=.*/PKG_HASH:=2c629f1ee327841c0288c9662fddc663eb53f3c76922b4660421a474cdb6e1f8/' package/passwall-packages/hysteria/Makefile
 
